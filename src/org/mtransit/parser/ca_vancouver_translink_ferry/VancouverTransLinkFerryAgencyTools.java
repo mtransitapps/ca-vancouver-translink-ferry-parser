@@ -23,7 +23,7 @@ import org.mtransit.parser.mt.data.MTripStop;
 // http://www.translink.ca/en/Schedules-and-Maps/Developer-Resources.aspx
 // http://www.translink.ca/en/Schedules-and-Maps/Developer-Resources/GTFS-Data.aspx
 // http://mapexport.translink.bc.ca/current/google_transit.zip
-public class VancouverTranslinkFerryAgencyTools extends DefaultAgencyTools {
+public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	public static void main(String[] args) {
 		if (args == null || args.length == 0) {
@@ -32,18 +32,18 @@ public class VancouverTranslinkFerryAgencyTools extends DefaultAgencyTools {
 			args[1] = "../../mtransitapps/ca-vancouver-translink-ferry-android/res/raw/";
 			args[2] = ""; // files-prefix
 		}
-		new VancouverTranslinkFerryAgencyTools().start(args);
+		new VancouverTransLinkFerryAgencyTools().start(args);
 	}
 
 	private HashSet<String> serviceIds;
 
 	@Override
 	public void start(String[] args) {
-		System.out.printf("Generating Translink ferry data...\n");
+		System.out.printf("Generating TransLink ferry data...\n");
 		long start = System.currentTimeMillis();
 		this.serviceIds = extractUsefulServiceIds(args, this);
 		super.start(args);
-		System.out.printf("Generating Translink ferry data... DONE in %s.\n", Utils.getPrettyDuration(System.currentTimeMillis() - start));
+		System.out.printf("Generating TransLink ferry data... DONE in %s.\n", Utils.getPrettyDuration(System.currentTimeMillis() - start));
 	}
 
 	@Override

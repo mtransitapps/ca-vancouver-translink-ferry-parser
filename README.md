@@ -1,4 +1,4 @@
 ca-vancouver-translink-ferry-parser
 ===================================
 
-Parser for Vancouver Translink Ferry data
+Parser for Vancouver TransLink Ferry data

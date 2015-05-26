@@ -75,6 +75,9 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return MAgency.ROUTE_TYPE_FERRY;
 	}
 
+	private static final String RSN_SEABUS = "998";
+	private static final long RID_SEABUS = 998l;
+
 	@Override
 	public long getRouteId(GRoute gRoute) {
 		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
@@ -85,17 +88,15 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return -1l;
 	}
 
-	private static final String SEABUS_SHORT_NAME = "SB";
 	private static final String SEABUS_LONG_NAME = "SeaBus";
 
 	@Override
 	public String getRouteShortName(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
-			return SEABUS_SHORT_NAME;
-		}
-		System.out.println("Unexpected route short name " + gRoute);
-		System.exit(-1);
-		return null;
+		String routeShortName = gRoute.route_short_name; // used by real-time API
+		if (Utils.isDigitsOnly(routeShortName)) { // used by real-time API
+			routeShortName = String.valueOf(Integer.valueOf(routeShortName)); // used by real-time API
+		} // used by real-time API
+		return routeShortName; // used by real-time API
 	}
 
 	@Override
@@ -118,9 +119,6 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	public String getAgencyColor() {
 		return AGENCY_COLOR;
 	}
-
-	private static final String RSN_SEABUS = "998";
-	private static final long RID_SEABUS = 998l;
 
 	@Override
 	public String getRouteColor(GRoute gRoute) {

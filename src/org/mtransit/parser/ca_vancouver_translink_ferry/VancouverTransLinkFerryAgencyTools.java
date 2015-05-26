@@ -88,15 +88,17 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return -1l;
 	}
 
+	private static final String SEABUS_SHORT_NAME = "SB";
 	private static final String SEABUS_LONG_NAME = "SeaBus";
 
 	@Override
 	public String getRouteShortName(GRoute gRoute) {
-		String routeShortName = gRoute.route_short_name; // used by real-time API
-		if (Utils.isDigitsOnly(routeShortName)) { // used by real-time API
-			routeShortName = String.valueOf(Integer.valueOf(routeShortName)); // used by real-time API
-		} // used by real-time API
-		return routeShortName; // used by real-time API
+		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
+			return SEABUS_SHORT_NAME;
+		}
+		System.out.println("Unexpected route short name " + gRoute);
+		System.exit(-1);
+		return null;
 	}
 
 	@Override

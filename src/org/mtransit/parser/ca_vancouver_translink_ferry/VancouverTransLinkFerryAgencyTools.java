@@ -163,4 +163,12 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		gStopName = MSpec.cleanNumbers(gStopName);
 		return MSpec.cleanLabel(gStopName);
 	}
+
+	@Override
+	public int getStopId(GStop gStop) {
+		if (!StringUtils.isEmpty(gStop.stop_code) && Utils.isDigitsOnly(gStop.stop_code)) {
+			return Integer.parseInt(gStop.stop_code); // using stop code as stop ID
+		}
+		return 1000000 + Integer.parseInt(gStop.stop_id);
+	}
 }

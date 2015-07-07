@@ -16,7 +16,7 @@ import org.mtransit.parser.gtfs.data.GTrip;
 import org.mtransit.parser.mt.data.MAgency;
 import org.mtransit.parser.mt.data.MDirectionType;
 import org.mtransit.parser.mt.data.MRoute;
-import org.mtransit.parser.mt.data.MSpec;
+import org.mtransit.parser.CleanUtils;
 import org.mtransit.parser.mt.data.MTrip;
 
 // http://www.translink.ca/en/Schedules-and-Maps/Developer-Resources.aspx
@@ -42,7 +42,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		long start = System.currentTimeMillis();
 		this.serviceIds = extractUsefulServiceIds(args, this);
 		super.start(args);
-		System.out.printf("\nGenerating TransLink ferry data... DONE in %s.", Utils.getPrettyDuration(System.currentTimeMillis() - start));
+		System.out.printf("\nGenerating TransLink ferry data... DONE in %s\n.", Utils.getPrettyDuration(System.currentTimeMillis() - start));
 	}
 
 	@Override
@@ -156,8 +156,8 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String cleanTripHeadsign(String tripHeadsign) {
-		tripHeadsign = MSpec.cleanStreetTypes(tripHeadsign);
-		return MSpec.cleanLabel(tripHeadsign);
+		tripHeadsign = CleanUtils.cleanStreetTypes(tripHeadsign);
+		return CleanUtils.cleanLabel(tripHeadsign);
 	}
 
 	private static final Pattern ENDS_WITH_SEABUS_BOUND = Pattern.compile("( seabus (north|south)bound$)", Pattern.CASE_INSENSITIVE);
@@ -166,9 +166,9 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	public String cleanStopName(String gStopName) {
 		gStopName = gStopName.toLowerCase(Locale.ENGLISH);
 		gStopName = ENDS_WITH_SEABUS_BOUND.matcher(gStopName).replaceAll(StringUtils.EMPTY);
-		gStopName = MSpec.cleanStreetTypes(gStopName);
-		gStopName = MSpec.cleanNumbers(gStopName);
-		return MSpec.cleanLabel(gStopName);
+		gStopName = CleanUtils.cleanStreetTypes(gStopName);
+		gStopName = CleanUtils.cleanNumbers(gStopName);
+		return CleanUtils.cleanLabel(gStopName);
 	}
 
 	@Override

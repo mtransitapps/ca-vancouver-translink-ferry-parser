@@ -66,7 +66,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		if (!RSN_SEABUS.equals(gRoute.route_short_name)) {
 			return true;
 		}
-		return gRoute.route_type != MAgency.ROUTE_TYPE_BUS; // declared as bus but we classify it as a ferry
+		return super.excludeRoute(gRoute);
 	}
 
 	@Override

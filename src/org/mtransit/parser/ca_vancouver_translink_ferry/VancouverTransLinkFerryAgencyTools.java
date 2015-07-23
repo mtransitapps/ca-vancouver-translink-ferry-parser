@@ -63,7 +63,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public boolean excludeRoute(GRoute gRoute) {
-		if (!RSN_SEABUS.equals(gRoute.route_short_name)) {
+		if (!RSN_SEABUS.equals(gRoute.getRouteShortName())) {
 			return true;
 		}
 		return super.excludeRoute(gRoute);
@@ -87,7 +87,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public long getRouteId(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
+		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
 			return RID_SEABUS;
 		}
 		System.out.println("Unexpected route short name " + gRoute);
@@ -100,7 +100,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteShortName(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
+		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
 			return SEABUS_SHORT_NAME;
 		}
 		System.out.println("Unexpected route short name " + gRoute);
@@ -110,7 +110,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteLongName(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
+		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
 			return SEABUS_LONG_NAME;
 		}
 		System.out.println("Unexpected route long name " + gRoute);
@@ -131,7 +131,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteColor(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.route_short_name)) {
+		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
 			return SEABUS_COLOR;
 		}
 		System.out.println("Unexpected route color " + gRoute);
@@ -142,10 +142,10 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	@Override
 	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
 		if (mRoute.id == RID_SEABUS) {
-			if (gTrip.direction_id == 0) {
+			if (gTrip.getDirectionId() == 0) {
 				mTrip.setHeadsignDirection(MDirectionType.NORTH);
 				return;
-			} else if (gTrip.direction_id == 1) {
+			} else if (gTrip.getDirectionId() == 1) {
 				mTrip.setHeadsignDirection(MDirectionType.SOUTH);
 				return;
 			}
@@ -173,9 +173,9 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public int getStopId(GStop gStop) {
-		if (!StringUtils.isEmpty(gStop.stop_code) && Utils.isDigitsOnly(gStop.stop_code)) {
-			return Integer.parseInt(gStop.stop_code); // using stop code as stop ID
+		if (!StringUtils.isEmpty(gStop.getStopCode()) && Utils.isDigitsOnly(gStop.getStopCode())) {
+			return Integer.parseInt(gStop.getStopCode()); // using stop code as stop ID
 		}
-		return 1000000 + Integer.parseInt(gStop.stop_id);
+		return 1000000 + Integer.parseInt(gStop.getStopId());
 	}
 }

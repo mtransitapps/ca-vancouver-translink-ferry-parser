@@ -143,7 +143,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
-		if (mRoute.id == RID_SEABUS) {
+		if (mRoute.getId() == RID_SEABUS) {
 			if (gTrip.getDirectionId() == 0) {
 				mTrip.setHeadsignDirection(MDirectionType.NORTH);
 				return;
@@ -152,7 +152,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 				return;
 			}
 		}
-		System.out.printf("Unexpected trip (unexpected route ID: %s): %s\n", mRoute.id, gTrip);
+		System.out.printf("Unexpected trip (unexpected route ID: %s): %s\n", mRoute.getId(), gTrip);
 		System.exit(-1);
 	}
 

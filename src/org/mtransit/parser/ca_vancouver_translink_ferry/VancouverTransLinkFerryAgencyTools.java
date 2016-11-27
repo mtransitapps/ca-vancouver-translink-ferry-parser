@@ -1,6 +1,8 @@
 package org.mtransit.parser.ca_vancouver_translink_ferry;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -63,12 +65,21 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return super.excludeCalendarDate(gCalendarDates);
 	}
 
+	private static final String RSN_SEABUS = "998";
+	private static final long RID_SEABUS = 998l;
+
+	private static final String INCLUDE_AGENCY_ID = "CMBC"; // Coast Mountain Bus Company only
+	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { RSN_SEABUS });
+
 	@Override
 	public boolean excludeRoute(GRoute gRoute) {
-		if (!RSN_SEABUS.equals(gRoute.getRouteShortName())) {
-			return true;
+		if (!INCLUDE_AGENCY_ID.equals(gRoute.getAgencyId())) {
+			return true; // exclude
 		}
-		return super.excludeRoute(gRoute);
+		if (!INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
+			return true; // exclude
+		}
+		return false; // keep
 	}
 
 	@Override
@@ -83,9 +94,6 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	public Integer getAgencyRouteType() {
 		return MAgency.ROUTE_TYPE_FERRY;
 	}
-
-	private static final String RSN_SEABUS = "998";
-	private static final long RID_SEABUS = 998l;
 
 	@Override
 	public long getRouteId(GRoute gRoute) {
@@ -154,6 +162,13 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		}
 		System.out.printf("Unexpected trip (unexpected route ID: %s): %s\n", mRoute.getId(), gTrip);
 		System.exit(-1);
+	}
+
+	@Override
+	public boolean mergeHeadsign(MTrip mTrip, MTrip mTripToMerge) {
+		System.out.printf("\nUnexpected tripts to merge %s & %s!\n", mTrip, mTripToMerge);
+		System.exit(-1);
+		return false;
 	}
 
 	@Override

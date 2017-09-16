@@ -65,7 +65,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return super.excludeCalendarDate(gCalendarDates);
 	}
 
-	private static final String RSN_SEABUS = "998";
+	private static final String RSN_SEABUS = "SeaBus";
 	private static final long RID_SEABUS = 998l;
 
 	private static final String INCLUDE_AGENCY_ID = "CMBC"; // Coast Mountain Bus Company only

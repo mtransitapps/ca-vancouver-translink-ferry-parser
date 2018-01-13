@@ -65,11 +65,10 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return super.excludeCalendarDate(gCalendarDates);
 	}
 
-	private static final String RSN_SEABUS = "998";
-	private static final long RID_SEABUS = 998l;
+	private static final long RID_SEABUS = 998L;
 
 	private static final String INCLUDE_AGENCY_ID = "CMBC"; // Coast Mountain Bus Company only
-	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { RSN_SEABUS });
+	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { "998", "SeaBus" });
 
 	@Override
 	public boolean excludeRoute(GRoute gRoute) {
@@ -97,7 +96,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public long getRouteId(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
+		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
 			return RID_SEABUS;
 		}
 		System.out.println("Unexpected route short name " + gRoute);
@@ -110,7 +109,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteShortName(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
+		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
 			return SEABUS_SHORT_NAME;
 		}
 		System.out.println("Unexpected route short name " + gRoute);
@@ -120,7 +119,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteLongName(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
+		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
 			return SEABUS_LONG_NAME;
 		}
 		System.out.println("Unexpected route long name " + gRoute);
@@ -141,7 +140,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteColor(GRoute gRoute) {
-		if (RSN_SEABUS.equals(gRoute.getRouteShortName())) {
+		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
 			return SEABUS_COLOR;
 		}
 		System.out.println("Unexpected route color " + gRoute);

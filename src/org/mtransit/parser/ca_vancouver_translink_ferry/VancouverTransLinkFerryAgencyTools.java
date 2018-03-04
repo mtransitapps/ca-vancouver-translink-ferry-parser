@@ -67,14 +67,10 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	private static final long RID_SEABUS = 998L;
 
-	private static final String INCLUDE_AGENCY_ID = "CMBC"; // Coast Mountain Bus Company only
 	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { "998", "SeaBus" });
 
 	@Override
 	public boolean excludeRoute(GRoute gRoute) {
-		if (!INCLUDE_AGENCY_ID.equals(gRoute.getAgencyId())) {
-			return true; // exclude
-		}
 		if (!INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
 			return true; // exclude
 		}

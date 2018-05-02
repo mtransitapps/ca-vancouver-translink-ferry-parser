@@ -67,7 +67,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	private static final long RID_SEABUS = 998L;
 
-	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { "998", "SeaBus" });
+	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { "998", "SeaBus", "SEABUS" });
 
 	@Override
 	public boolean excludeRoute(GRoute gRoute) {

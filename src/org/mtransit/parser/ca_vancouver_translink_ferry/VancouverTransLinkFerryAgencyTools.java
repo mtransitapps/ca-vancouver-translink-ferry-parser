@@ -74,9 +74,14 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	private static final List<String> INCLUDE_RSN = Arrays.asList(new String[] { "998", "SeaBus", "SEABUS" });
 
+	private boolean isSeaBusRoute(GRoute gRoute) {
+		return INCLUDE_RSN.contains(gRoute.getRouteShortName()) //
+				|| INCLUDE_RSN.contains(gRoute.getRouteLongName());
+	}
+
 	@Override
 	public boolean excludeRoute(GRoute gRoute) {
-		if (!INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
+		if (!isSeaBusRoute(gRoute)) {
 			return true; // exclude
 		}
 		return false; // keep
@@ -97,7 +102,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public long getRouteId(GRoute gRoute) {
-		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
+		if (isSeaBusRoute(gRoute)) {
 			return RID_SEABUS;
 		}
 		System.out.println("Unexpected route short name " + gRoute);
@@ -110,7 +115,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteShortName(GRoute gRoute) {
-		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
+		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_SHORT_NAME;
 		}
 		System.out.println("Unexpected route short name " + gRoute);
@@ -120,7 +125,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteLongName(GRoute gRoute) {
-		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
+		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_LONG_NAME;
 		}
 		System.out.println("Unexpected route long name " + gRoute);
@@ -141,7 +146,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public String getRouteColor(GRoute gRoute) {
-		if (INCLUDE_RSN.contains(gRoute.getRouteShortName())) {
+		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_COLOR;
 		}
 		System.out.println("Unexpected route color " + gRoute);

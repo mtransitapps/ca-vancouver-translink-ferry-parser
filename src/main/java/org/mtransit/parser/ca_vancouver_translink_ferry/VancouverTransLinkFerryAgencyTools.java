@@ -181,6 +181,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	@Override
 	public String cleanStopName(String gStopName) {
 		gStopName = gStopName.toLowerCase(Locale.ENGLISH);
+		gStopName = CleanUtils.cleanBounds(gStopName);
 		gStopName = ENDS_WITH_SEABUS_BOUND.matcher(gStopName).replaceAll(StringUtils.EMPTY);
 		gStopName = CleanUtils.cleanStreetTypes(gStopName);
 		gStopName = CleanUtils.cleanNumbers(gStopName);

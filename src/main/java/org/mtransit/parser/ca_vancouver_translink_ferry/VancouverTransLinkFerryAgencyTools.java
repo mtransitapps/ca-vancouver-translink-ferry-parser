@@ -1,7 +1,7 @@
 package org.mtransit.parser.ca_vancouver_translink_ferry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.mtransit.parser.CleanUtils;
+import org.mtransit.parser.Constants;
 import org.mtransit.parser.DefaultAgencyTools;
 import org.mtransit.parser.MTLog;
 import org.mtransit.parser.Utils;
@@ -146,8 +146,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_COLOR;
 		}
-		MTLog.logFatal("Unexpected route color " + gRoute);
-		return null;
+		throw new MTLog.Fatal("Unexpected route color " + gRoute);
 	}
 
 	@Override
@@ -166,8 +165,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	@Override
 	public boolean mergeHeadsign(MTrip mTrip, MTrip mTripToMerge) {
-		MTLog.logFatal("Unexpected trips to merge %s & %s!\n", mTrip, mTripToMerge);
-		return false;
+		throw new MTLog.Fatal("Unexpected trips to merge %s & %s!\n", mTrip, mTripToMerge);
 	}
 
 	@Override
@@ -176,13 +174,16 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		return CleanUtils.cleanLabel(tripHeadsign);
 	}
 
-	private static final Pattern ENDS_WITH_SEABUS_BOUND = Pattern.compile("( seabus (north|south)bound$)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern SEABUS_ = CleanUtils.cleanWords("seabus");
+	private static final String SEABUS_REPLACEMENT = CleanUtils.cleanWordsReplacement(Constants.SPACE_);
 
 	@Override
 	public String cleanStopName(String gStopName) {
-		gStopName = gStopName.toLowerCase(Locale.ENGLISH);
+		if (Utils.isUppercaseOnly(gStopName, true, true)) {
+			gStopName = gStopName.toLowerCase(Locale.ENGLISH);
+		}
+		gStopName = SEABUS_.matcher(gStopName).replaceAll(SEABUS_REPLACEMENT);
 		gStopName = CleanUtils.cleanBounds(gStopName);
-		gStopName = ENDS_WITH_SEABUS_BOUND.matcher(gStopName).replaceAll(StringUtils.EMPTY);
 		gStopName = CleanUtils.cleanStreetTypes(gStopName);
 		gStopName = CleanUtils.cleanNumbers(gStopName);
 		return CleanUtils.cleanLabel(gStopName);

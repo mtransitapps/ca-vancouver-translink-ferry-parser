@@ -1,7 +1,8 @@
 package org.mtransit.parser.ca_vancouver_translink_ferry;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mtransit.parser.CleanUtils;
-import org.mtransit.parser.Constants;
 import org.mtransit.parser.DefaultAgencyTools;
 import org.mtransit.parser.MTLog;
 import org.mtransit.parser.Utils;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import static org.mtransit.parser.Constants.SPACE_;
+
 // http://www.translink.ca/en/Schedules-and-Maps/Developer-Resources.aspx
 // http://www.translink.ca/en/Schedules-and-Maps/Developer-Resources/GTFS-Data.aspx
 // http://mapexport.translink.bc.ca/current/google_transit.zip
@@ -30,7 +33,7 @@ import java.util.regex.Pattern;
 // http://gtfs.translink.ca/static/latest
 public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
-	public static void main(String[] args) {
+	public static void main(@Nullable String[] args) {
 		if (args == null || args.length == 0) {
 			args = new String[3];
 			args[0] = "input/gtfs.zip";
@@ -40,41 +43,40 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 		new VancouverTransLinkFerryAgencyTools().start(args);
 	}
 
-	private HashSet<String> serviceIds;
+	@Nullable
+	private HashSet<Integer> serviceIdInts;
 
 	@Override
-	public void start(String[] args) {
+	public void start(@NotNull String[] args) {
 		MTLog.log("Generating TransLink ferry data...");
 		long start = System.currentTimeMillis();
-		this.serviceIds = extractUsefulServiceIds(args, this, true);
+		this.serviceIdInts = extractUsefulServiceIdInts(args, this, true);
 		super.start(args);
 		MTLog.log("Generating TransLink ferry data... DONE in %s.", Utils.getPrettyDuration(System.currentTimeMillis() - start));
 	}
 
 	@Override
 	public boolean excludingAll() {
-		return this.serviceIds != null && this.serviceIds.isEmpty();
+		return this.serviceIdInts != null && this.serviceIdInts.isEmpty();
 	}
 
 	@Override
-	public boolean excludeCalendar(GCalendar gCalendar) {
-		if (this.serviceIds != null) {
-			return excludeUselessCalendar(gCalendar, this.serviceIds);
+	public boolean excludeCalendar(@NotNull GCalendar gCalendar) {
+		if (this.serviceIdInts != null) {
+			return excludeUselessCalendarInt(gCalendar, this.serviceIdInts);
 		}
 		return super.excludeCalendar(gCalendar);
 	}
 
 	@Override
-	public boolean excludeCalendarDate(GCalendarDate gCalendarDates) {
-		if (this.serviceIds != null) {
-			return excludeUselessCalendarDate(gCalendarDates, this.serviceIds);
+	public boolean excludeCalendarDate(@NotNull GCalendarDate gCalendarDates) {
+		if (this.serviceIdInts != null) {
+			return excludeUselessCalendarDateInt(gCalendarDates, this.serviceIdInts);
 		}
 		return super.excludeCalendarDate(gCalendarDates);
 	}
 
-	@SuppressWarnings("unused")
-	private static final long RID_SEABUS = 998L;
-
+	// private static final long RID_SEABUS = 998L;
 	private static final List<String> INCLUDE_RSN = Arrays.asList("998", "SeaBus", "SEABUS");
 
 	private boolean isSeaBusRoute(GRoute gRoute) {
@@ -83,7 +85,8 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	}
 
 	@Override
-	public boolean excludeRoute(GRoute gRoute) {
+	public boolean excludeRoute(@NotNull GRoute gRoute) {
+		//noinspection RedundantIfStatement
 		if (!isSeaBusRoute(gRoute)) {
 			return true; // exclude
 		}
@@ -91,43 +94,43 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	}
 
 	@Override
-	public boolean excludeTrip(GTrip gTrip) {
-		if (this.serviceIds != null) {
-			return excludeUselessTrip(gTrip, this.serviceIds);
+	public boolean excludeTrip(@NotNull GTrip gTrip) {
+		if (this.serviceIdInts != null) {
+			return excludeUselessTripInt(gTrip, this.serviceIdInts);
 		}
 		return super.excludeTrip(gTrip);
 	}
 
+	@NotNull
 	@Override
 	public Integer getAgencyRouteType() {
 		return MAgency.ROUTE_TYPE_FERRY;
 	}
 
 	@Override
-	public long getRouteId(GRoute gRoute) {
-		// TODO export original route ID
+	public long getRouteId(@NotNull GRoute gRoute) {
 		return super.getRouteId(gRoute); // useful to match with GTFS real-time
 	}
 
 	private static final String SEABUS_SHORT_NAME = "SB";
 	private static final String SEABUS_LONG_NAME = "SeaBus";
 
+	@Nullable
 	@Override
-	public String getRouteShortName(GRoute gRoute) {
+	public String getRouteShortName(@NotNull GRoute gRoute) {
 		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_SHORT_NAME;
 		}
-		MTLog.logFatal("Unexpected route short name " + gRoute);
-		return null;
+		throw new MTLog.Fatal("Unexpected route short name for %s!", gRoute);
 	}
 
+	@NotNull
 	@Override
-	public String getRouteLongName(GRoute gRoute) {
+	public String getRouteLongName(@NotNull GRoute gRoute) {
 		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_LONG_NAME;
 		}
-		MTLog.logFatal("Unexpected route long name " + gRoute);
-		return null;
+		throw new MTLog.Fatal("Unexpected route long name for %s!", gRoute);
 	}
 
 	private static final String AGENCY_COLOR_BLUE = "0761A5"; // BLUE (merge)
@@ -136,13 +139,15 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 
 	private static final String SEABUS_COLOR = "82695E"; // (from PDF)
 
+	@NotNull
 	@Override
 	public String getAgencyColor() {
 		return AGENCY_COLOR;
 	}
 
+	@Nullable
 	@Override
-	public String getRouteColor(GRoute gRoute) {
+	public String getRouteColor(@NotNull GRoute gRoute) {
 		if (isSeaBusRoute(gRoute)) {
 			return SEABUS_COLOR;
 		}
@@ -150,7 +155,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	}
 
 	@Override
-	public void setTripHeadsign(MRoute mRoute, MTrip mTrip, GTrip gTrip, GSpec gtfs) {
+	public void setTripHeadsign(@NotNull MRoute mRoute, @NotNull MTrip mTrip, @NotNull GTrip gTrip, @NotNull GSpec gtfs) {
 		if (mRoute.getId() == 6771L) { // RID_SEABUS
 			if (gTrip.getDirectionId() == 0) {
 				mTrip.setHeadsignDirection(MDirectionType.NORTH);
@@ -160,28 +165,28 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 				return;
 			}
 		}
-		MTLog.logFatal("Unexpected trip (unexpected route ID: %s): %s\n", mRoute.getId(), gTrip);
+		throw new MTLog.Fatal("Unexpected trip (unexpected route ID: %s): %s", mRoute.getId(), gTrip);
 	}
 
 	@Override
-	public boolean mergeHeadsign(MTrip mTrip, MTrip mTripToMerge) {
-		throw new MTLog.Fatal("Unexpected trips to merge %s & %s!\n", mTrip, mTripToMerge);
+	public boolean mergeHeadsign(@NotNull MTrip mTrip, @NotNull MTrip mTripToMerge) {
+		throw new MTLog.Fatal("Unexpected trips to merge %s & %s!", mTrip, mTripToMerge);
 	}
 
+	@NotNull
 	@Override
-	public String cleanTripHeadsign(String tripHeadsign) {
+	public String cleanTripHeadsign(@NotNull String tripHeadsign) {
 		tripHeadsign = CleanUtils.cleanStreetTypes(tripHeadsign);
 		return CleanUtils.cleanLabel(tripHeadsign);
 	}
 
 	private static final Pattern SEABUS_ = CleanUtils.cleanWords("seabus");
-	private static final String SEABUS_REPLACEMENT = CleanUtils.cleanWordsReplacement(Constants.SPACE_);
+	private static final String SEABUS_REPLACEMENT = CleanUtils.cleanWordsReplacement(SPACE_);
 
+	@NotNull
 	@Override
-	public String cleanStopName(String gStopName) {
-		if (Utils.isUppercaseOnly(gStopName, true, true)) {
-			gStopName = gStopName.toLowerCase(Locale.ENGLISH);
-		}
+	public String cleanStopName(@NotNull String gStopName) {
+		gStopName = CleanUtils.toLowerCaseUpperCaseWords(Locale.ENGLISH, gStopName);
 		gStopName = SEABUS_.matcher(gStopName).replaceAll(SEABUS_REPLACEMENT);
 		gStopName = CleanUtils.cleanBounds(gStopName);
 		gStopName = CleanUtils.cleanStreetTypes(gStopName);
@@ -190,7 +195,7 @@ public class VancouverTransLinkFerryAgencyTools extends DefaultAgencyTools {
 	}
 
 	@Override
-	public int getStopId(GStop gStop) {
+	public int getStopId(@NotNull GStop gStop) {
 		return super.getStopId(gStop); // using stop ID as stop code (useful to match with GTFS real-time)
 	}
 }
